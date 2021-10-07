@@ -1,0 +1,289 @@
+#pointer-2{
+    transform: rotate(155deg);
+}
+#non-vis-img{
+    visibility: hidden;
+    display: none;
+}
+
+@media screen and (max-width: 767px) {
+    .border-medium{
+        padding-bottom: 50px;
+        border-bottom: 1px solid black;
+    }
+    #pointer-1{
+        transform: rotate(90deg);
+        margin-bottom: 50px;
+    }
+    #pointer-2{
+        transform: rotate(90deg);
+    }
+    #non-vis-img{
+        display: inline-block;
+        visibility: visible;
+        transform: rotate(90deg);
+        text-align: center;
+    }
+
+    .margin-row{
+        margin-top: 0px !important;
+    }
+
+    .time-size, .var-size, .p-start, .p-go-time, .p-standart, .p-product-made, .p-product-remain, .p-product-all{
+        text-align: center;
+    }
+
+    .btn-center-align{
+        text-align: center !important;
+    }
+
+    .o1{
+        order: 1;
+    }
+    .o-2{
+        order: 2;
+    }
+
+}
+
+@media screen and (max-width: 991px) {
+    .btn-circle-lg{
+        text-align: center !important;
+    }
+    .btn-margin-lg{
+        margin: 0px !important;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .border-medium{
+        margin-top: 50px;
+        border-right: 1px solid black;
+    }
+}
+
+.btn-style{
+    background-color: #F78620;
+    color: white;
+    text-decoration: none;
+    width: 88px;
+}
+
+#clock{
+    color: gray;
+}
+
+.btn-grey{
+    background-color: #d7d1d1;
+    width: 162px;
+}
+
+#btn-nal{
+    background-color: #d7d1d1;
+    width: 202px;
+}
+
+.form-machine{
+    padding: 10px;
+    border: 1px solid black;
+}
+
+.input-width{
+    width: 220px;
+}
+
+.form-order{
+    color: white;
+    border: 1px solid black;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 30px;
+    padding-bottom: 10px;
+}
+
+.order-container{
+    background-color: #F78620;
+    opacity: 50%;
+}
+
+.task-container{
+    background-color: #F78620;
+    opacity: 50%;
+    font-weight: bold;
+    color: white;
+}
+
+.form-order .row{
+    padding: 5px;
+    font-weight: bold;
+}
+
+#btn-order{
+    background-color: #F78620;
+    color: white;
+    text-decoration: none;
+    width: 162px;
+}
+
+#text-go{
+    color: #F78620;
+}
+
+.orange-message-block{
+    width: 200px;
+    height: 160px;
+    background-color: #F78620;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid gray;
+    display: inline-block;
+    text-align: center;
+}
+
+.white-message-block{
+    width: 200px;
+    height: 160px;
+    background-color: white;
+    color: #F78620;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid grey;
+    display: inline-block;
+    text-align: center;
+}
+
+.text-orange{
+    color: #F78620;
+}
+
+.adjustment-form{
+    padding-right: 100px;
+    padding-left: 100px;
+}
+
+.green-span{
+    color: #04C144;
+}
+
+.btn-circle{
+    width: 140px;
+    height: 140px;
+    color: white;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 26px;
+}
+
+.btn-circle-green{
+    background-color: #04C144;
+}
+
+.btn-circle-orange{
+    background-color: #F78620;
+}
+
+.btn-circle-red{
+    background-color: #F20505;
+}
+
+.time-size{
+    font-size: 38px;
+}
+
+.var-size{
+    font-size: 38px;
+}
+
+.p-item{
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.p-start{
+    color: #F78620;
+}
+
+.p-go-time{
+    color: #04C144;
+}
+
+.p-standart{
+    color: #040CC1;
+}
+
+.p-product-made{
+    color: #B204C1;
+}
+
+.p-product-remain{
+    color: #0472C1;
+}
+
+.p-product-all{
+    color: #04C144;
+}
+
+.time-standart{
+    color: #040CC1;
+}
+
+#login-form{
+    max-width: 450px;
+    display:inline-block;
+}
+
+#scan-form{
+    max-width: 450px;
+    display: none;
+}
+
+#choice_stand{
+    max-width: 500px;
+    display:inline-block;
+}
+
+#scan_stand{
+    max-width: 500px;
+    display: none;
+}
+
+.nav-item{
+    width: 50%;
+}
+
+.active-tab{
+    background-color: white;
+}
+
+.active-tab .nav-link, .nav-grey .nav-link{
+    color: black;
+}
+
+.nav-grey{
+    background-color: #E5E5E5;
+}
+
+.error{
+    color: red;
+    max-width: 450px;
+    border: 1px solid black;
+    display: inline-block;
+    padding: 10px 25px;
+}
+
+.error li{
+    list-style-type: none;
+    text-align: left;
+}
+
+.message{
+    border: 1px solid black;
+    padding: 10px 25px;
+    max-width: 450px;
+}
+
+
+
+
+

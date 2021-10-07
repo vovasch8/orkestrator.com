@@ -1,0 +1,41 @@
+#sidebar{
+    border-right: 1px solid #d7d1d1;
+}
+
+#admin-content {
+    padding-left: 300px;
+}
+
+.stand{
+    height: 150px;
+}
+
+#openbtn{
+    display: none;
+    visibility: hidden;
+}
+
+@media screen and (max-width: 575px) {
+    #sidebar{
+        display: none;
+        visibility: hidden;
+    }
+    #admin-content{
+        padding-left: 0px;
+    }
+
+    #openbtn {
+        display: block;
+        visibility: visible;
+        font-size: 20px;
+        cursor: pointer;
+        background-color: #F78620;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+    }
+}
+
+.users-form{
+    width: 450px;
+}

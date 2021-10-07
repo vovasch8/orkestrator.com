@@ -1,0 +1,32 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+#clock{
+    color: #fff;
+    background-color: #f78620;
+    font-weight: bold;
+    font-size: 25px;
+    text-align: center;
+}
+
+.person-item{
+    padding: 0px;
+    border: 1px solid #f78620;
+    color: #f78620;
+}
+
+.person-item:first-of-type .photo-person{
+    width: 150px;
+    height: 150px;
+}
+
+.time{
+    margin-top: 70px;
+}
+
+.person-time{
+    background-color: #f78620;
+    color: white;
+    padding: 10px;
+}
