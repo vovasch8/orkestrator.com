@@ -62,11 +62,21 @@
     }
 }
 
+.btn-orange{
+    background-color: #F78620;
+    color: white;
+    text-decoration: none;
+}
+
 .btn-style{
     background-color: #F78620;
     color: white;
     text-decoration: none;
     width: 88px;
+}
+
+.btn-refresh{
+    width: 95px;
 }
 
 #clock{

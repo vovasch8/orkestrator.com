@@ -90,7 +90,7 @@
         </li>
         <hr>
         <li>
-            <a href="/admin/users" class="nav-link link-dark">
+            <a href="/admin/user-list" class="nav-link link-dark">
                 <i class="fa fa-users" aria-hidden="true"></i>
                 Пользователи
             </a>

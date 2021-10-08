@@ -34,7 +34,7 @@ class SiteController
                 User::auth($userId);
                 $user = User::getUserById($userId);
 
-                if($user['u_roles'] == 1){
+                if($user['u_role'] == 1){
                     //Якщо користувач адмін перенаправляємо його до адмін панелі
                     header("Location: /admin/dashboard");
                 }else{

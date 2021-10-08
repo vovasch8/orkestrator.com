@@ -32,7 +32,7 @@
                 <div class="col-md-12 col-sm-12 pt-5 ps-5 pe-5 border-right">
                     <p class="text-center">ВХОД ЧЕРЕЗ ЛОГИН И ПАРОЛЬ</p>
                     <label for="login">ВВЕДИТЕ ЛОГИН</label>
-                    <input type="text" id="login" name="login" class="form-control">
+                    <input type="email" id="login" name="login" class="form-control">
                     <label for="password">ВВЕДИТЕ ПАРОЛЬ</label>
                     <input type="password" id="password" name="password" class="form-control">
                 </div>

@@ -5,7 +5,7 @@ class User
 {
     /**
      * Провіряє чи існує користувач із заданим $email и $password
-     * @param integer $login <p>login</p>
+     * @param string $login <p>login</p>
      * @param string $password <p>Пароль</p>
      * @return mixed : integer user id or false
      */
@@ -15,11 +15,11 @@ class User
         $db = Db::getConnection();
 
         // Текст запросу до БД
-        $sql = 'SELECT * FROM users WHERE u_card = :u_card AND u_password = :u_password';
+        $sql = 'SELECT * FROM users WHERE u_email = :u_email AND u_password = :u_password';
 
         // Отримання результату. Використовується підготовлений запрос
         $result = $db->prepare($sql);
-        $result->bindParam(':u_card', $login, PDO::PARAM_INT);
+        $result->bindParam(':u_email', $login, PDO::PARAM_INT);
         $result->bindParam(':u_password', $password, PDO::PARAM_STR);
         $result->execute();
 
@@ -28,7 +28,7 @@ class User
 
         if ($user) {
             // Якщо запис існує повертається id користувача
-            return $user['id'];
+            return $user['u_id'];
         }
         return false;
     }
@@ -44,17 +44,81 @@ class User
         $db = Db::getConnection();
 
         // Текст запиту до БД
-        $sql = 'SELECT * FROM users WHERE id = :id';
+        $sql = 'SELECT * FROM users WHERE u_id = :u_id';
 
         // Отримання і повернення результату використовуючи підготовлений запрос
         $result = $db->prepare($sql);
-        $result->bindParam(':id', $id, PDO::PARAM_INT);
+        $result->bindParam(':u_id', $id, PDO::PARAM_INT);
 
         // Вказуємо що хочемо отримати результат у вигляді масиву
         $result->setFetchMode(PDO::FETCH_ASSOC);
         $result->execute();
 
         return $result->fetch();
+    }
+
+    /**
+     * Повертає список користувачів
+     * @param integer $count <p>кількість користувачів</p>
+     * @return array <p>Масив із інформацією про користувачів</p>
+     */
+    public static function getListOfUsers($count = 25){
+        // З'єднання з БД
+        $db = Db::getConnection();
+
+        $sql = 'SELECT * FROM users LIMIT ' . $count;
+
+        $result = $db->query( $sql);
+        $users = array();
+        $i = 0;
+        while ($row = $result->fetch()) {
+            $users[$i]['u_id'] = $row['u_id'];
+            $users[$i]['u_fname'] = $row['u_fname'];
+            $users[$i]['u_sname'] = $row['u_sname'];
+            $users[$i]['u_email'] = $row['u_email'];
+            $users[$i]['u_card'] = $row['u_card'];
+            $i++;
+        }
+
+        return $users;
+    }
+
+    /**
+     * Редактування даних користувач
+     * @param integer $id <p>id користувача</p>
+     * @param string $name <p>Імя</p>
+     * @param string $password <p>Пароль</p>
+     * @return boolean <p>Результат виконання методу</p>
+     */
+    public static function editUser($id, $fname, $sname, $login,  $password, $card, $photo, $departament, $position, $phone, $inner_phone, $isAdmin)
+    {
+        // Соединение с БД
+        $db = Db::getConnection();
+
+        // Текст запроса к БД
+        $sql = "UPDATE users 
+            SET u_fname = :u_fname, u_sname = :u_sname, u_email = :u_email, u_password = :u_password, u_card = :u_card,
+            u_photo = :u_photo, u_departament = :u_departament, u_position = :u_position, 
+            u_phone = :u_phone, u_inner_phone = :u_inner_phone, u_role = :u_role 
+            WHERE u_id = :u_id";
+
+        // Получение и возврат результатов. Используется подготовленный запрос
+        $result = $db->prepare($sql);
+        $result->bindParam(':u_id', $id, PDO::PARAM_INT);
+        $result->bindParam(':u_fname', $fname, PDO::PARAM_STR);
+        $result->bindParam(':u_sname', $sname, PDO::PARAM_STR);
+        $result->bindParam(':u_email', $login, PDO::PARAM_STR);
+        $result->bindParam(':u_password', $password, PDO::PARAM_STR);
+        $result->bindParam(':u_card', $card, PDO::PARAM_INT);
+
+        $result->bindParam(':u_photo', $photo, PDO::PARAM_STR);
+        $result->bindParam(':u_departament', $departament, PDO::PARAM_STR);
+        $result->bindParam(':u_position', $position, PDO::PARAM_STR);
+        $result->bindParam(':u_phone', $phone, PDO::PARAM_STR);
+        $result->bindParam(':u_inner_phone', $inner_phone, PDO::PARAM_STR);
+        $result->bindParam(':u_role', $isAdmin, PDO::PARAM_INT);
+
+        return $result->execute();
     }
 
     /**
@@ -103,7 +167,7 @@ class User
 
         $user = User::getUserById($userId);
 
-        if($user['u_roles'] == 1){
+        if($user['u_role'] == 1){
             return true;
         }
 
@@ -115,27 +179,35 @@ class User
      * Реєстрація користувача
      * @param string $fname <p>Ім'я</p>
      * @param string $sname <p>Прізвище</p>
-     * @param integer $login <p>Логін</p>
+     * @param string $login <p>Логін</p>
      * @param string $password <p>Пароль</p>
      * @param integer $isAdmin <p>Роль</p>
      * @return boolean <p>Результат виконання методу</p>
      */
-    public static function register($fname, $sname, $login, $password, $isAdmin)
+    public static function register($id, $fname, $sname, $login,  $password, $card, $photo, $departament, $position, $phone, $inner_phone, $isAdmin)
     {
         // З'єднання з БД
         $db = Db::getConnection();
 
         // Текст запиту до БД
-        $sql = 'INSERT INTO users (u_fname, u_sname, u_card, u_password, u_roles) '
-            . 'VALUES (:u_fname, :u_sname, :u_card, :u_password, :u_roles)';
+        $sql = 'INSERT INTO users (u_id, u_fname, u_sname, u_email, u_password, u_card, u_photo, u_departament, u_position, u_phone, u_inner_phone, u_role) '
+            . 'VALUES (:u_id, :u_fname, :u_sname, :u_email, :u_password, :u_card, :u_photo, :u_departament, :u_position, :u_phone, :u_inner_phone, :u_role)';
 
         // Получение и возврат результатов. Используется подготовленный запрос
         $result = $db->prepare($sql);
+        $result->bindParam(':u_id', $id, PDO::PARAM_INT);
         $result->bindParam(':u_fname', $fname, PDO::PARAM_STR);
         $result->bindParam(':u_sname', $sname, PDO::PARAM_STR);
-        $result->bindParam(':u_card', $login, PDO::PARAM_INT);
+        $result->bindParam(':u_email', $login, PDO::PARAM_STR);
         $result->bindParam(':u_password', $password, PDO::PARAM_STR);
-        $result->bindParam(':u_roles', $isAdmin, PDO::PARAM_INT);
+        $result->bindParam(':u_card', $card, PDO::PARAM_INT);
+
+        $result->bindParam(':u_photo', $photo, PDO::PARAM_STR);
+        $result->bindParam(':u_departament', $departament, PDO::PARAM_STR);
+        $result->bindParam(':u_position', $position, PDO::PARAM_STR);
+        $result->bindParam(':u_phone', $phone, PDO::PARAM_STR);
+        $result->bindParam(':u_inner_phone', $inner_phone, PDO::PARAM_STR);
+        $result->bindParam(':u_role', $isAdmin, PDO::PARAM_INT);
         return $result->execute();
     }
 
@@ -166,8 +238,21 @@ class User
     }
 
     /**
+     * Проверяет email
+     * @param string $email <p>E-mail</p>
+     * @return boolean <p>Результат выполнения метода</p>
+     */
+    public static function checkEmail($email)
+    {
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Перевіряє чи логін вже не зайнятий
-     * @param integer $login <p>Login</p>
+     * @param string $login <p>Login</p>
      * @return boolean <p>Результат виконання методу</p>
      */
     public static function checkLoginExists($login)
@@ -176,11 +261,36 @@ class User
         $db = Db::getConnection();
 
         // Текст запиту до БД
-        $sql = 'SELECT * FROM users WHERE u_card = :u_card';
+        $sql = 'SELECT * FROM users WHERE u_email = :u_email';
 
         // Отримання результатів використовуючи підготовлений запит
         $result = $db->prepare($sql);
-        $result->bindParam(':u_card', $login, PDO::PARAM_STR);
+        $result->bindParam(':u_email', $login, PDO::PARAM_STR);
+        $result->execute();
+
+
+        if ($result->fetchColumn()){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Перевіряє чи id вже не зайнятий
+     * @param integer $id <p>Login</p>
+     * @return boolean <p>Результат виконання методу</p>
+     */
+    public static function checkIdExists($id)
+    {
+        // З'єднання з базою даних
+        $db = Db::getConnection();
+
+        // Текст запиту до БД
+        $sql = 'SELECT * FROM users WHERE u_id = :u_id';
+
+        // Отримання результатів використовуючи підготовлений запит
+        $result = $db->prepare($sql);
+        $result->bindParam(':u_id', $id, PDO::PARAM_INT);
         $result->execute();
 
 
