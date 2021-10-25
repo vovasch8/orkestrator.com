@@ -31,25 +31,18 @@
 
     <h1 id="more" class="mt-4">Авторизовані користувачі</h1>
 
-    <div id="content">
-        <?php foreach ($persons as $person):?>
-
-    <!--        Відображення дати для записів які були пізніше-->
-            <?php $person_date = substr($person['date'], 5, 5);
-            if($person_date != $date){
-               echo "<h4 class='text-center mt-3'><b>" . $person_date . "</b></h4>";
-               $date = $person_date;
-            } ?>
+    <div id="content" class="mt-4">
+        <?php if(empty($persons)){
+        echo '<h5 class="mt-5">Працівників поки немає!</h5>';
+        }?>
+        <?php foreach ($persons as $person): ?>
             <div class="row mt-3 person-item">
                 <div class="col-md-3">
                     <img class="photo-person" width="150px" height="150px"
-                         src="<?php if($person['pathPhoto'] != ''){
-//                             echo $person['pathPhoto'];
-                             echo "/layout/image/maxim.jpg";
-                         }else{ echo "/layout/image/user.jfif";} ?>" alt="Користувач">
+                         src="<?php echo '/layout/image/persons/' . $person['u_identificator'] . '.jpg';?>" alt="Користувач">
                 </div>
                 <div class="col-md-9 text-start">
-                    <h2><?php echo $person['fio']; ?></h2>
+                    <h2><?php echo $person['u_fname'] . " " . $person['u_sname']; ?></h2>
                     <div class="text-end mb-3 time"><b class="person-time"><?php  echo 'Time: '. substr($person['date'], 11, 5); ?></b></div>
                 </div>
             </div>

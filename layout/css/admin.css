@@ -34,8 +34,28 @@
         padding: 10px 15px;
         border: none;
     }
+
 }
 
 .users-form{
     width: 450px;
+}
+
+.v-col{
+    vertical-align: middle;
+}
+
+.table-striped>tbody>tr:nth-child(odd)>td,
+.table-striped>tbody>tr:nth-child(odd)>th {
+    background-color: #feedde;
+}
+
+.list-select{
+    display: inline-block;
+    max-width: 200px;
+}
+
+.btn-time-sort{
+    display: inline-block;
+    max-width: 100px;
 }

@@ -3,28 +3,28 @@
 class SiteController
 {
 
-    public static $lastUserId;
+    static $lastUserId;
     /**
      * Action для сторінки Вхід на сайт
      */
     public function actionLogin()
     {
         // Поля форми
-        $login = false;
+        $email = false;
         $password = false;
 
         // Обробка форми
         if (isset($_POST['submit'])) {
             // Якщо форма відправлена
             // Отримуємо дані із форми
-            $login = $_POST['login'];
+            $email = $_POST['email'];
             $password = $_POST['password'];
 
             // Змінна для помилок
             $errors = false;
 
             // Провіряємо чи користувач існує
-            $userId = User::checkUserData($login, $password);
+            $userId = User::checkUserData($email, $password);
 
             if ($userId == false) {
                 // Якщо дані не вірні показуємо помилку
@@ -72,26 +72,7 @@ class SiteController
 
     public function actionKitchen(){
 
-        // Встановлюємо з'єднання
-        $dsn = "mysql:host=localhost;dbname=raspberryDB";
-        $db = new PDO($dsn, 'orka', '1Gfhjkm1');
-
-//        $result = $db->query('SELECT * FROM req ORDER BY `id` DESC LIMIT 6');
-        $result = $db->query('SELECT max(id) as id, idCard, fio, max(date) as date, pathPhoto FROM req GROUP BY idCard, substring(date, 1, 10), fio, pathPhoto ORDER BY id DESC LIMIT 6');
-        $persons = array();
-        $i = 0;
-        while ($row = $result->fetch()) {
-            $persons[$i]['id'] = $row['id'];
-            $persons[$i]['idCard'] = $row['idCard'];
-            $persons[$i]['fio'] = $row['fio'];
-            $persons[$i]['date'] = $row['date'];
-            $persons[$i]['pathPhoto'] = $row['pathPhoto'];
-            $i++;
-        }
-
-        SiteController::$lastUserId = $persons[0]['id'];
-
-        $date = date('m-d');
+        $persons = User::getKitchenUsers();
 
         require_once(ROOT . '/views/site/kitchen.php');
         return true;
@@ -99,54 +80,25 @@ class SiteController
 
     public function actionKitchenAjax(){
 
-        // Встановлюємо з'єднання
-        $dsn = "mysql:host=localhost;dbname=raspberryDB";
-        $db = new PDO($dsn, 'orka', '1Gfhjkm1');
+        $persons = User::getKitchenUsers();
 
-//        $result = $db->query('SELECT * FROM req ORDER BY `id` DESC LIMIT 6');
-        $result = $db->query('SELECT max(id) as id, idCard, fio, max(date) as date, pathPhoto FROM req GROUP BY idCard, substring(date, 1, 10), fio, pathPhoto ORDER BY id DESC LIMIT 6');
-        $persons = array();
-        $i = 0;
-        while ($row = $result->fetch()) {
-            $persons[$i]['id'] = $row['id'];
-            $persons[$i]['idCard'] = $row['idCard'];
-            $persons[$i]['fio'] = $row['fio'];
-            $persons[$i]['date'] = $row['date'];
-            $persons[$i]['pathPhoto'] = $row['pathPhoto'];
-            $i++;
+        if(empty($persons)){
+            echo '<h5 class="mt-5">Працівників поки немає!</h5>';
         }
+             foreach ($persons as $person):?>
 
-        //Якщо добавився навий запис в базу даних оновлюємо дані користувачів щоб не перегружати що разу
-        if(SiteController::$lastUserId != $persons[0]['id']){
-
-            SiteController::$lastUserId = $persons[0]['id'];
-
-            $date = date('m-d');?>
-
-            <?php foreach ($persons as $person):?>
-
-    <!--        Відображення дати для записів які були пізніше-->
-            <?php $person_date = substr($person['date'], 5, 5);
-            if($person_date != $date){
-               echo "<h4 class='text-center mt-3'><b>" . $person_date . "</b></h4>";
-               $date = $person_date;
-            } ?>
-            <div id="content" class="row mt-3 person-item">
+            <div id="" class="row mt-3 person-item">
                 <div class="col-md-3">
                     <img class="photo-person" width="150px" height="150px"
-                         src="<?php if($person['pathPhoto'] != ''){
-//                             echo $person['pathPhoto'];
-                             echo "/layout/image/ivan.jpg";
-                         }else{ echo "/layout/image/user.jfif";} ?>" alt="Користувач">
+                         src="<?php echo '/layout/image/persons/' . $person['u_identificator'] . '.jpg';?>" alt="Користувач">
                 </div>
                 <div class="col-md-9 text-start">
-                    <h2><?php echo $person['fio']; ?></h2>
+                    <h2><?php echo $person['u_fname'] . " " . $person['u_sname']; ?></h2>
                     <div class="text-end mb-3 time"><b class="person-time"><?php  echo 'Time: '. substr($person['date'], 11, 5); ?></b></div>
                 </div>
             </div>
             <?php endforeach; ?>
             <?php
-        }
         return true;
     }
 

@@ -17,6 +17,65 @@ class AdminController
         return true;
     }
 
+    public function actionTimeRegister(){
+
+        // Перевіряємо чи користувач увійшов, отримуємо його id
+        $userId = User::checkLogged();
+
+        // Отримуємо інформацію про користувача із БД
+        $user = User::getUserById($userId);
+
+        //Перевіряємо чи користувач є адміном
+        User::isAdmin($userId);
+
+        $sort_date = 'week';
+
+        $reg_users = User::getUsersRegisterTime();
+        $users = User::getListOfUsers();
+
+        $user_work_time = $this->work_time($users, $reg_users);
+
+        require_once (ROOT . "/views/admin/time_register.php");
+        return true;
+    }
+
+    public function work_time($users, $reg_users){
+        $counter = 0;
+        $result = array();
+
+        for($i = 0; $i < count($users); $i++){
+            while($counter < count($reg_users) && $users[$i]['u_id'] == $reg_users[$counter]['u_id']) {
+//                echo date('H:i', strtotime($users[$counter]['t_date'])) . ' - ';
+                $result[$reg_users[$counter]['u_id']][date('Y-m-d', strtotime($reg_users[$counter]['t_date']))][] = date('H:i', strtotime($reg_users[$counter]['t_date']));
+                if(isset($reg_users[$counter+1]) && date('Y-m-d', strtotime($reg_users[$counter]['t_date'])) == date('Y-m-d', strtotime($reg_users[$counter+1]['t_date'] ))){
+//                    echo date('H:i', strtotime($users[$counter+1]['t_date'])) . '<br>';
+                    $result[$reg_users[$counter+1]['u_id']][date('Y-m-d', strtotime($reg_users[$counter+1]['t_date']))][] = date('H:i', strtotime($reg_users[$counter+1]['t_date']));
+                    $counter++;
+                }
+                else{
+//                    echo '22:00' . '<br>';
+                    $result[$reg_users[$counter]['u_id']][date('Y-m-d', strtotime($reg_users[$counter]['t_date']))][] = '22:00';
+                }
+                $counter++;
+            }
+        }
+        return $result;
+    }
+
+    public function actionTimeRegisterAjax(){
+
+        $departament = $_POST['dep'];
+        $sort_date = $_POST['sdate'];
+
+        $reg_users = User::getUsersRegisterTime($departament, $sort_date);
+        $users = User::getListOfUsers($departament);
+
+        $user_work_time = $this->work_time($users, $reg_users);
+
+        include_once "template/ajax/time_register_table.php";
+        return true;
+    }
+
     public function actionAddUser(){
 
         // Перевіряємо чи користувач увійшов, отримуємо його id
@@ -97,6 +156,16 @@ class AdminController
         $users = User::getListOfUsers();
 
         require_once(ROOT . "/views/admin/user_list.php");
+        return true;
+    }
+
+    public function actionUserListAjax()
+    {
+
+        $departament = $_POST['dep'];
+        $users = User::getListOfUsers($departament);
+
+        require_once(ROOT . "/template/ajax/user_list_table.php");
         return true;
     }
 

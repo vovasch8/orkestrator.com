@@ -6,7 +6,7 @@
     color: #fff;
     background-color: #f78620;
     font-weight: bold;
-    font-size: 25px;
+    font-size: 32px;
     text-align: center;
 }
 
@@ -16,9 +16,8 @@
     color: #f78620;
 }
 
-.person-item:first-of-type .photo-person{
-    width: 150px;
-    height: 150px;
+.person-item h2{
+    font-weight: bold;
 }
 
 .time{

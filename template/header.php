@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="/layout/css/admin.css">
 </head>
 <body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
 <header class="container d-flex flex-wrap align-items-center justify-content-center justify-content-between mt-1">
     <a href="/" class="d-flex align-items-center col-md-6 text-dark text-decoration-none">

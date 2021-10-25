@@ -5,11 +5,11 @@ class User
 {
     /**
      * Провіряє чи існує користувач із заданим $email и $password
-     * @param string $login <p>login</p>
+     * @param string $email <p>login</p>
      * @param string $password <p>Пароль</p>
      * @return mixed : integer user id or false
      */
-    public static function checkUserData($login, $password)
+    public static function checkUserData($email, $password)
     {
         // З'єднання з базою даних
         $db = Db::getConnection();
@@ -19,7 +19,7 @@ class User
 
         // Отримання результату. Використовується підготовлений запрос
         $result = $db->prepare($sql);
-        $result->bindParam(':u_email', $login, PDO::PARAM_INT);
+        $result->bindParam(':u_email', $email, PDO::PARAM_STR);
         $result->bindParam(':u_password', $password, PDO::PARAM_STR);
         $result->execute();
 
@@ -62,11 +62,15 @@ class User
      * @param integer $count <p>кількість користувачів</p>
      * @return array <p>Масив із інформацією про користувачів</p>
      */
-    public static function getListOfUsers($count = 25){
+    public static function getListOfUsers($departament = 'Аутсорсинг', $count = 1000){
         // З'єднання з БД
         $db = Db::getConnection();
 
-        $sql = 'SELECT * FROM users LIMIT ' . $count;
+        if($departament != ''){
+            $departament = ' WHERE u_departament = "' . $departament . '" ';
+        }
+
+        $sql = 'SELECT * FROM users ' . $departament . ' LIMIT ' . $count;
 
         $result = $db->query( $sql);
         $users = array();
@@ -77,6 +81,74 @@ class User
             $users[$i]['u_sname'] = $row['u_sname'];
             $users[$i]['u_email'] = $row['u_email'];
             $users[$i]['u_card'] = $row['u_card'];
+            $i++;
+        }
+
+        return $users;
+    }
+
+    public static function getKitchenUsers(){
+        // З'єднання з БД
+        $db = Db::getConnection();
+
+//        $result = $db->query('SELECT * FROM piKitchen ORDER BY `id` DESC LIMIT 6');
+        $result = $db->query('SELECT max(id) as id, value as card, max(created_at) as date, u.u_identificator, u.u_fname, u.u_sname, u.u_photo 
+        FROM piKitchen as p INNER JOIN users as u ON u.u_card = p.value 
+        WHERE substring(p.created_at, 1, 10) = CURRENT_DATE() GROUP BY u.u_card, substring(p.created_at, 1, 10), u.u_identificator, u.u_fname, u.u_sname, u.u_photo 
+        ORDER BY id DESC LIMIT 6');
+
+        $persons = array();
+        $i = 0;
+        while ($row = $result->fetch()) {
+            $persons[$i]['id'] = $row['id'];
+            $persons[$i]['card'] = $row['card'];
+            $persons[$i]['date'] = $row['date'];
+            $persons[$i]['u_identificator'] = $row['u_identificator'];
+            $persons[$i]['u_fname'] = $row['u_fname'];
+            $persons[$i]['u_sname'] = $row['u_sname'];
+            $persons[$i]['u_photo'] = $row['u_photo'];
+            $i++;
+        }
+
+        return $persons;
+    }
+
+    public static function getUsersRegisterTime($departament = 'Аутсорсинг', $flag = 'week'){
+        // З'єднання з БД
+        $db = Db::getConnection();
+        $filter = '';
+        $switch = '';
+
+        if($departament != ''){
+            $departament = ' WHERE u.u_departament = "' . $departament.'" AND t.t_is_work = "1"';
+            switch ($flag){
+                case 'day':{
+                    $filter = ' AND SUBSTRING(t.t_date, 1, 10) = CURRENT_DATE()';
+                    break;
+                }case 'week':{
+                    $filter = ' AND WEEK(t.t_date, 1) = WEEK(CURRENT_DATE(), 1)';
+                    break;
+                }case 'month':{
+                    $filter = ' AND MONTH(t.t_date) = MONTH(CURRENT_DATE())';
+                    break;
+                }default:{
+                    break;
+                }
+
+            }
+        }
+
+
+        $sql = 'SELECT u.u_id, u.u_fname, u.u_sname, u.u_departament, t.t_date FROM `time_register` as t INNER JOIN `users` as u ON t.t_card = u.u_card ' . $departament . $filter . ' ORDER BY u.u_id, t.t_date';
+
+        $result = $db->query( $sql);
+        $users = array();
+        $i = 0;
+        while ($row = $result->fetch()) {
+            $users[$i]['u_id'] = $row['u_id'];
+            $users[$i]['u_fname'] = $row['u_fname'];
+            $users[$i]['u_sname'] = $row['u_sname'];
+            $users[$i]['t_date'] = $row['t_date'];
             $i++;
         }
 
@@ -109,7 +181,7 @@ class User
         $result->bindParam(':u_sname', $sname, PDO::PARAM_STR);
         $result->bindParam(':u_email', $login, PDO::PARAM_STR);
         $result->bindParam(':u_password', $password, PDO::PARAM_STR);
-        $result->bindParam(':u_card', $card, PDO::PARAM_INT);
+        $result->bindParam(':u_card', $card, PDO::PARAM_STR);
 
         $result->bindParam(':u_photo', $photo, PDO::PARAM_STR);
         $result->bindParam(':u_departament', $departament, PDO::PARAM_STR);
@@ -179,28 +251,28 @@ class User
      * Реєстрація користувача
      * @param string $fname <p>Ім'я</p>
      * @param string $sname <p>Прізвище</p>
-     * @param string $login <p>Логін</p>
+     * @param string $email <p>Логін</p>
      * @param string $password <p>Пароль</p>
      * @param integer $isAdmin <p>Роль</p>
      * @return boolean <p>Результат виконання методу</p>
      */
-    public static function register($id, $fname, $sname, $login,  $password, $card, $photo, $departament, $position, $phone, $inner_phone, $isAdmin)
+    public static function register($id, $fname, $sname, $email,  $password, $card, $photo, $departament, $position, $phone, $inner_phone, $isAdmin)
     {
         // З'єднання з БД
         $db = Db::getConnection();
 
         // Текст запиту до БД
-        $sql = 'INSERT INTO users (u_id, u_fname, u_sname, u_email, u_password, u_card, u_photo, u_departament, u_position, u_phone, u_inner_phone, u_role) '
-            . 'VALUES (:u_id, :u_fname, :u_sname, :u_email, :u_password, :u_card, :u_photo, :u_departament, :u_position, :u_phone, :u_inner_phone, :u_role)';
+        $sql = 'INSERT INTO users (u_identificator, u_fname, u_sname, u_email, u_password, u_card, u_photo, u_departament, u_position, u_phone, u_inner_phone, u_role) '
+            . 'VALUES (:u_identificator, :u_fname, :u_sname, :u_email, :u_password, :u_card, :u_photo, :u_departament, :u_position, :u_phone, :u_inner_phone, :u_role)';
 
         // Получение и возврат результатов. Используется подготовленный запрос
         $result = $db->prepare($sql);
-        $result->bindParam(':u_id', $id, PDO::PARAM_INT);
+        $result->bindParam(':u_identificator', $id, PDO::PARAM_INT);
         $result->bindParam(':u_fname', $fname, PDO::PARAM_STR);
         $result->bindParam(':u_sname', $sname, PDO::PARAM_STR);
-        $result->bindParam(':u_email', $login, PDO::PARAM_STR);
+        $result->bindParam(':u_email', $email, PDO::PARAM_STR);
         $result->bindParam(':u_password', $password, PDO::PARAM_STR);
-        $result->bindParam(':u_card', $card, PDO::PARAM_INT);
+        $result->bindParam(':u_card', $card, PDO::PARAM_STR);
 
         $result->bindParam(':u_photo', $photo, PDO::PARAM_STR);
         $result->bindParam(':u_departament', $departament, PDO::PARAM_STR);
@@ -252,10 +324,10 @@ class User
 
     /**
      * Перевіряє чи логін вже не зайнятий
-     * @param string $login <p>Login</p>
+     * @param string $email <p>Login</p>
      * @return boolean <p>Результат виконання методу</p>
      */
-    public static function checkLoginExists($login)
+    public static function checkLoginExists($email)
     {
         // З'єднання з базою даних
         $db = Db::getConnection();
@@ -265,7 +337,7 @@ class User
 
         // Отримання результатів використовуючи підготовлений запит
         $result = $db->prepare($sql);
-        $result->bindParam(':u_email', $login, PDO::PARAM_STR);
+        $result->bindParam(':u_email', $email, PDO::PARAM_STR);
         $result->execute();
 
 
@@ -286,11 +358,11 @@ class User
         $db = Db::getConnection();
 
         // Текст запиту до БД
-        $sql = 'SELECT * FROM users WHERE u_id = :u_id';
+        $sql = 'SELECT * FROM users WHERE u_identificator = :u_identificator';
 
         // Отримання результатів використовуючи підготовлений запит
         $result = $db->prepare($sql);
-        $result->bindParam(':u_id', $id, PDO::PARAM_INT);
+        $result->bindParam(':u_identificator', $id, PDO::PARAM_INT);
         $result->execute();
 
 

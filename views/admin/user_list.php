@@ -5,10 +5,19 @@
 
     <div id="admin-content" class="container">
         <h5 class="text-center mt-5">Управление пользователями</h5>
-        <a href="/admin/add-user"><button class="btn btn-orange">Добавить пользователя</button></a>
+        <div class="row">
+            <div class="col-6 ">
+                <a href="/admin/add-user"><button class="btn btn-orange">Добавить пользователя</button></a>
+            </div>
+            <div class="col-6 text-end">
+                <span><b>Sort:</b></span>
+                <select id="user-list-select" class="form-select list-select" aria-label="Default select example" name="departament">
+                    <?php include_once 'template/departaments.php';?>
+                </select>
+            </div>
+        </div>
 
-
-        <div class="justify-content-center row">
+        <div id="content" class="justify-content-center row">
             <div class="table-responsive">
                 <table class="table  table-bordered mt-3">
                     <thead>
@@ -38,4 +47,5 @@
         </div>
     </div>
 
+    <script src="/layout/js/ajax.js"></script>
 <?php include_once "template/footer.php";

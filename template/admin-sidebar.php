@@ -16,9 +16,22 @@
             </a>
         </li>
         <li>
+        <li>
+            <a href="/admin/time-register" class="nav-link link-dark">
+                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                Учет времени работы
+            </a>
+        </li>
+        <li>
             <a href="#" class="nav-link link-dark">
                 <i class="fa fa-tasks" aria-hidden="true"></i>
                 Задачи
+            </a>
+        </li>
+        <li>
+            <a href="/admin/user-list" class="nav-link link-dark">
+                <i class="fa fa-users" aria-hidden="true"></i>
+                Пользователи
             </a>
         </li>
         <hr>
@@ -89,12 +102,6 @@
             </a>
         </li>
         <hr>
-        <li>
-            <a href="/admin/user-list" class="nav-link link-dark">
-                <i class="fa fa-users" aria-hidden="true"></i>
-                Пользователи
-            </a>
-        </li>
         <li>
             <a href="#" class="nav-link link-dark">
                 <i class="fa fa-cog" aria-hidden="true"></i>
