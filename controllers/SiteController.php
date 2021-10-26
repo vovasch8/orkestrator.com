@@ -74,6 +74,9 @@ class SiteController
 
         $persons = User::getKitchenUsers();
 
+        $proiz = User::getCountUsers('Производство');
+        $office = User::getCountUsers('Офис');
+
         require_once(ROOT . '/views/site/kitchen.php');
         return true;
     }
@@ -81,6 +84,9 @@ class SiteController
     public function actionKitchenAjax(){
 
         $persons = User::getKitchenUsers();
+
+        $proiz = User::getCountUsers('Производство');
+        $office = User::getCountUsers('Офис');
 
         if(empty($persons)){
             echo '<h5 class="mt-5">Працівників поки немає!</h5>';
@@ -98,6 +104,13 @@ class SiteController
                 </div>
             </div>
             <?php endforeach; ?>
+            <div class="row text-center people-counter justify-content-center mt-3 mb-5">
+                <h2>Количество сотрудников</h2>
+                <p>
+                    Производство: <span id="proiz"><?php echo $proiz; ?></span>
+                    Офис: <span id="office"><?php echo $office?></span>
+                </p>
+            </div>
             <?php
         return true;
     }

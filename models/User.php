@@ -59,10 +59,11 @@ class User
 
     /**
      * Повертає список користувачів
-     * @param integer $count <p>кількість користувачів</p>
+     * @param integer $departament <p>Підрозділ компанії за замовчуванням IT подразделение</p>
+     * @param integer $count <p>Кількість користувачів за замовчуванням 1000</p>
      * @return array <p>Масив із інформацією про користувачів</p>
      */
-    public static function getListOfUsers($departament = 'Аутсорсинг', $count = 1000){
+    public static function getListOfUsers($departament = 'IT подразделение', $count = 1000){
         // З'єднання з БД
         $db = Db::getConnection();
 
@@ -87,6 +88,10 @@ class User
         return $users;
     }
 
+    /**
+     * Повертає список користувачів за сьогодні, які пікались на кухні
+     * @return array <p>Масив із інформацією про користувачів</p>
+     */
     public static function getKitchenUsers(){
         // З'єднання з БД
         $db = Db::getConnection();
@@ -113,7 +118,14 @@ class User
         return $persons;
     }
 
-    public static function getUsersRegisterTime($departament = 'Аутсорсинг', $flag = 'week'){
+    /**
+     * Повертає список користувачів з датою коли вони пікнулись на прохідній,
+     * 2 значення відкриття та закриття робочого дня
+     * @param string $departament <p>Підрозділ компанії</p>
+     * @param string $flag <p>Вказує по якому критерію сортувати дані: день, тиждень, місяць</p>
+     * @return array <p>Масив із інформацією про користувачів по 2 значення з відкриттям і закриттям робочого дня</p>
+     */
+    public static function getUsersRegisterTime($departament = 'IT подразделение', $flag = 'week'){
         // З'єднання з БД
         $db = Db::getConnection();
         $filter = '';
@@ -138,7 +150,6 @@ class User
             }
         }
 
-
         $sql = 'SELECT u.u_id, u.u_fname, u.u_sname, u.u_departament, t.t_date FROM `time_register` as t INNER JOIN `users` as u ON t.t_card = u.u_card ' . $departament . $filter . ' ORDER BY u.u_id, t.t_date';
 
         $result = $db->query( $sql);
@@ -153,6 +164,37 @@ class User
         }
 
         return $users;
+    }
+
+    /**
+     * Повертає кількість користувачів, які сьогодні пікнулись на прохідній
+     * @param string $variant <p>Має 2 значення або Производство або Офис</p>
+     * @return integer <p>Кількість користувачів які пікнулись на Производстве або Офисе</p>
+     */
+    public static function getCountUsers($variant){
+        $db = Db::getConnection();
+
+        $sql = '';
+
+        if($variant == 'Производство'){
+            $sql = 'SELECT u.u_id, u.u_fname, u.u_sname FROM `users` as u INNER JOIN `time_register` as t ON u.u_card = t.t_card WHERE u.u_departament IN("Производственное подразделение", "Подразделение склада", "Подразделение изготовления LED", "Админ производства") AND  substring(t.t_date, 1, 10) = CURRENT_DATE() GROUP BY u.u_id';
+        }elseif ($variant == 'Офис') {
+            $sql = 'SELECT u.u_id, u.u_fname, u.u_sname FROM `users` as u INNER JOIN `time_register` as t ON u.u_card = t.t_card WHERE u.u_departament 
+            IN("IT подразделение", "Директорат", "Подразделение продаж", "Логистическое подразделение", "Подразделение закупки", "Подразделение маркетинга", "ВЕД подразделение", "Подразделение бухгалтерии", "Юридическое подразделение", "Подразделение питания"
+            "HR подразделение", "Сервисное подразделение", "Логистическое подразделение (лагерунг)")  AND  substring(t.t_date, 1, 10) = CURRENT_DATE()  GROUP BY u.u_id';
+        }
+
+        $result = $db->query( $sql);
+        $users = array();
+        $i = 0;
+        while ($row = $result->fetch()) {
+            $users[$i]['u_id'] = $row['u_id'];
+            $users[$i]['u_fname'] = $row['u_fname'];
+            $users[$i]['u_sname'] = $row['u_sname'];
+            $i++;
+        }
+
+        return count($users);
     }
 
     /**

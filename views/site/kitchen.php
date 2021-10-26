@@ -47,6 +47,13 @@
                 </div>
             </div>
         <?php endforeach; ?>
+        <div class="row text-center people-counter justify-content-center mt-3 mb-5">
+            <h2>Количество сотрудников</h2>
+            <p>
+            Производство: <span id="proiz"><?php echo $proiz; ?></span>
+            Офис: <span id="office"><?php echo $office?></span>
+            </p>
+        </div>
     </div>
 
 

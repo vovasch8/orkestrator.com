@@ -29,3 +29,16 @@
     color: white;
     padding: 10px;
 }
+
+.people-counter{
+    color: white;
+    background-color: #f78620;
+    border: 1px solid #f78620;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+#proiz{
+    margin-right: 50px;
+}
