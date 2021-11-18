@@ -6,6 +6,25 @@
     <div id="admin-content" class="container">
         <h5 class="text-center mt-5">Управление пользователями</h5>
 
+        <?php if (isset($errors) && is_array($errors)): ?>
+            <div class="container text-center justify-content-center">
+                <h6>Ошибка</h6>
+                <ul class="error">
+                    <?php foreach ($errors as $error): ?>
+                        <li> - <?php echo $error; ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <br>
+        <?php endif; ?>
+
+        <?php if($result != false):?>
+            <div class="container text-center justify-content-center">
+                <h6 class="mb-3 mt-3">Уведомление</h6>
+                <span class="text-success text-center message">Пользователь успешно отредактирован!</span>
+            </div>
+        <?php endif; ?>
+
         <div class="justify-content-center row">
             <form action="#" method="post" class="users-form">
                 <h6 class="text-center mt-3">Редактирование пользователя</h6>
@@ -23,6 +42,26 @@
 
                 <h6 class="text-center mt-3">Общее</h6>
                 <hr>
+                <?php if($editedUser['u_dinner'] == 1): ?>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" <?php echo 'checked';?> type="radio" name="dinner" id="inlineDinner1" value="1">
+                        <label class="form-check-label" for="inlineDinner1">Обедает</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="dinner" id="inlineDinner2" value="0">
+                        <label class="form-check-label" for="inlineDinner2">Не обедает</label>
+                    </div>
+                <?php else:?>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="dinner" id="inlineDinner1" value="1">
+                        <label class="form-check-label" for="inlineDinner1">Обедает</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" <?php echo 'checked';?> type="radio" name="dinner" id="inlineDinner2" value="0">
+                        <label class="form-check-label" for="inlineRadio2">Не обедает</label>
+                    </div>
+                <?php endif;?>
+                <br>
                 <label for="photo">Путь к аватарке</label>
                 <input type="text" name="photo" value="<?php echo $editedUser['u_photo'];?>" class="form-control">
                 <label for="departament">Подразделение</label>
@@ -35,6 +74,7 @@
 
                 <label for="position">Должность</label>
                 <input type="text" name="position" value="<?php echo $editedUser['u_position'];?>" class="form-control">
+
                 <label for="phone">Мобильний телефон</label>
                 <input type="text" name="phone" value="<?php echo $editedUser['u_phone'];?>" class="form-control">
                 <label for="phone">Внутренний телефон</label>

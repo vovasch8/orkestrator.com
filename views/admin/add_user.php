@@ -44,6 +44,16 @@
 
             <h6 class="text-center mt-3">Общее</h6>
             <hr>
+
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" checked type="radio" name="dinner" id="inlineDinner1" value="1">
+                <label class="form-check-label" for="inlineRadio1">Обедает</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="dinner" id="inlineDinner2" value="0">
+                <label class="form-check-label" for="inlineRadio2">Не обедает</label>
+            </div>
+            <br>
             <label for="photo">Путь к аватарке</label>
             <input type="text" name="photo" class="form-control">
             <label for="departament">Подразделение</label>

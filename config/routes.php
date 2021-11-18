@@ -13,6 +13,8 @@ return array(
     'admin/add-user' => 'admin/addUser',
     'admin/time-register-ajax' => 'admin/timeRegisterAjax',
     'admin/time-register' => 'admin/timeRegister',
+    'admin/work-shift-ajax' => 'admin/workShiftAjax',
+    'admin/work-shift' => 'admin/workShift',
 
     'site/logout' => 'site/logout',
     'site/kitchen' => 'site/kitchen',

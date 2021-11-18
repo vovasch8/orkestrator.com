@@ -2,7 +2,7 @@ var base = 60;
 var clocktimer,dateObj,dh,dm,ds,ms;
 var readout='';
 var h=1,m=1,tm=1,s=0,ts=0,ms=0,init=0;
-var ispause = 0;
+var ispause = 0, oldDateObj, oldS=0;
 
 //функция для очистки поля
 function ClearСlock() {
@@ -16,7 +16,12 @@ function ClearСlock() {
 //функция для старта секундомера
 function StartTIME() {
         var cdateObj = new Date();
-        var t = (cdateObj.getTime() - dateObj.getTime()) - (s * 1000);
+        var t;
+        if(ispause == 1){
+            t = (oldDateObj.getTime() - dateObj.getTime() - (oldS*1000));
+        }else{
+            t = (cdateObj.getTime() - dateObj.getTime()) - (s*1000);
+        }
         if (t > 999) {
             s++;
         }
@@ -75,9 +80,9 @@ function StartTIME() {
 
         readout = dh + ':' + dm + ':' + ds;
         document.getElementById("timer").innerHTML = readout;
-        if(ispause == 0) {
-            clocktimer = setTimeout("StartTIME()", 1);
-        }
+
+        clocktimer = setTimeout("StartTIME()", 1);
+
 }
 
 //Функция запуска и остановки
@@ -95,8 +100,8 @@ function Start() {
         StartTIME();
         init=1;
     }else{
-        ispause = 0;
         StartTIME();
+        ispause = 0;
     }
 }
 function Stop(){
@@ -107,9 +112,11 @@ function Stop(){
 function Pause(){
     if(ispause == 0){
         clearTimeout(clocktimer);
+        oldDateObj = new Date();
+        oldS = s;
         ispause = 1;
     }else {
-        ispause = 0;
         StartTIME();
+        ispause = 0;
     }
 }

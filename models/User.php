@@ -88,6 +88,27 @@ class User
         return $users;
     }
 
+    public static function getUsersFromProduction(){
+        // З'єднання з БД
+        $db = Db::getConnection();
+
+        $sql = 'SELECT * FROM users WHERE u_departament IN ("Производственное подразделение", "Подразделение склада", "Подразделение изготовления LED", "Админ производства")';
+
+        $result = $db->query( $sql);
+        $users = array();
+        $i = 0;
+        while ($row = $result->fetch()) {
+            $users[$i]['u_id'] = $row['u_id'];
+            $users[$i]['u_fname'] = $row['u_fname'];
+            $users[$i]['u_sname'] = $row['u_sname'];
+            $users[$i]['u_email'] = $row['u_email'];
+            $users[$i]['u_card'] = $row['u_card'];
+            $i++;
+        }
+
+        return $users;
+    }
+
     /**
      * Повертає список користувачів за сьогодні, які пікались на кухні
      * @return array <p>Масив із інформацією про користувачів</p>
@@ -204,7 +225,7 @@ class User
      * @param string $password <p>Пароль</p>
      * @return boolean <p>Результат виконання методу</p>
      */
-    public static function editUser($id, $fname, $sname, $login,  $password, $card, $photo, $departament, $position, $phone, $inner_phone, $isAdmin)
+    public static function editUser($id, $fname, $sname, $login,  $password, $card, $photo, $departament, $position, $phone, $inner_phone, $isAdmin, $isDinner)
     {
         // Соединение с БД
         $db = Db::getConnection();
@@ -213,7 +234,7 @@ class User
         $sql = "UPDATE users 
             SET u_fname = :u_fname, u_sname = :u_sname, u_email = :u_email, u_password = :u_password, u_card = :u_card,
             u_photo = :u_photo, u_departament = :u_departament, u_position = :u_position, 
-            u_phone = :u_phone, u_inner_phone = :u_inner_phone, u_role = :u_role 
+            u_phone = :u_phone, u_inner_phone = :u_inner_phone, u_role = :u_role, u_dinner = :u_dinner
             WHERE u_id = :u_id";
 
         // Получение и возврат результатов. Используется подготовленный запрос
@@ -231,6 +252,7 @@ class User
         $result->bindParam(':u_phone', $phone, PDO::PARAM_STR);
         $result->bindParam(':u_inner_phone', $inner_phone, PDO::PARAM_STR);
         $result->bindParam(':u_role', $isAdmin, PDO::PARAM_INT);
+        $result->bindParam(':u_dinner', $isDinner, PDO::PARAM_BOOL);
 
         return $result->execute();
     }
@@ -298,14 +320,14 @@ class User
      * @param integer $isAdmin <p>Роль</p>
      * @return boolean <p>Результат виконання методу</p>
      */
-    public static function register($id, $fname, $sname, $email,  $password, $card, $photo, $departament, $position, $phone, $inner_phone, $isAdmin)
+    public static function register($id, $fname, $sname, $email,  $password, $card, $photo, $departament, $position, $phone, $inner_phone, $isAdmin, $isDinner)
     {
         // З'єднання з БД
         $db = Db::getConnection();
 
         // Текст запиту до БД
-        $sql = 'INSERT INTO users (u_identificator, u_fname, u_sname, u_email, u_password, u_card, u_photo, u_departament, u_position, u_phone, u_inner_phone, u_role) '
-            . 'VALUES (:u_identificator, :u_fname, :u_sname, :u_email, :u_password, :u_card, :u_photo, :u_departament, :u_position, :u_phone, :u_inner_phone, :u_role)';
+        $sql = 'INSERT INTO users (u_identificator, u_fname, u_sname, u_email, u_password, u_card, u_photo, u_departament, u_position, u_phone, u_inner_phone, u_role, u_dinner) '
+            . 'VALUES (:u_identificator, :u_fname, :u_sname, :u_email, :u_password, :u_card, :u_photo, :u_departament, :u_position, :u_phone, :u_inner_phone, :u_role, :u_dinner)';
 
         // Получение и возврат результатов. Используется подготовленный запрос
         $result = $db->prepare($sql);
@@ -322,6 +344,7 @@ class User
         $result->bindParam(':u_phone', $phone, PDO::PARAM_STR);
         $result->bindParam(':u_inner_phone', $inner_phone, PDO::PARAM_STR);
         $result->bindParam(':u_role', $isAdmin, PDO::PARAM_INT);
+        $result->bindParam(':u_dinner', $isDinner, PDO::PARAM_BOOL);
         return $result->execute();
     }
 
